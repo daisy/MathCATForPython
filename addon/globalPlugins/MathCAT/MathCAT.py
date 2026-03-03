@@ -567,6 +567,11 @@ class MathCAT(mathPres.MathPresentationProvider):
 			speech.speakMessage(_("Illegal MathML found: see NVDA error log for details"))
 			libmathcat.SetMathML("<math></math>")  # set it to something
 		try:
+			say_fontstyle_change: bool = config.conf["documentFormatting"]["reportHighlight"]
+			libmathcat.SetPreference(
+				"IgnoreBold",
+				"false" if say_fontstyle_change else "true",
+			)
 			supportedCommands: set[Type["SynthCommand"]] = synth.supportedCommands
 			# Set preferences for capital letters
 			libmathcat.SetPreference(
