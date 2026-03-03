@@ -67,19 +67,19 @@ pub fn GetVersion(_py: Python) -> PyResult<String> {
 #[pyfunction]
 /// Returns a list of all supported languages (["en", "es", ...])
 pub fn GetSupportedLanguages(_py: Python) -> PyResult<Vec<String>> {  // type in Python is list[str]
-    return Ok( get_supported_languages() )
+    return convert_error(get_supported_languages());
 }
 
 #[pyfunction]
 /// Returns a list of all supported speech styles given a language (["ClearSpeak", "SimpleSpeak", ...])
 pub fn GetSupportedSpeechStyles(_py: Python, lang: String) -> PyResult<Vec<String>> {  // type in Python is list[str]
-    return Ok( get_supported_speech_styles(lang) );
+    return convert_error(get_supported_speech_styles(lang));
 }
 
 #[pyfunction]
 /// Returns a list of all supported braille codes (["UEB", "Nemeth", ...])
 pub fn GetSupportedBrailleCodes(_py: Python) -> PyResult<Vec<String>> {  // type in Python is list[str]
-    return Ok( get_supported_braille_codes() );
+    return convert_error(get_supported_braille_codes());
 }
 
 #[pyfunction]
@@ -201,7 +201,7 @@ mod py_tests {
     #[test]
     fn test_setting() {
         // this isn't a real test
-        pyo3::prepare_freethreaded_python();
+        Python::initialize();
         let mathml_str = "<math><mo>(</mo><mrow><mn>451</mn><mo>,</mo><mn>231</mn></mrow><mo>)</mo></math>";
         match convert_error( libmathcat::interface::set_mathml(mathml_str.to_string()) ) {
             Ok(_mathml_with_ids) => println!("MathML is set w/o error"),
