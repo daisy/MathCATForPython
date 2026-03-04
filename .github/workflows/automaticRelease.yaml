@@ -207,11 +207,10 @@ jobs:
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-64.nvda-addon"
         done
-        ls -l *.nvda-addon
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
-        name: addon
+        name: addon-64
         path: "*.nvda-addon"
         compression-level: 0
         retention-days: 1
@@ -266,11 +265,10 @@ jobs:
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-32.nvda-addon"
         done          
-        ls -l *.nvda-addon
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
-        name: addon
+        name: addon-32
         path: "*.nvda-addon"
         compression-level: 0
         retention-days: 1
@@ -301,10 +299,18 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: libmathcat_py-64-3.13-linux.zip
-    - name: download the addon
+    - name: Download 64-bit addon
       uses: actions/download-artifact@v4
       with:
-        name: addon
+        name: addon-64
+    - name: Download 32-bit addon
+      uses: actions/download-artifact@v4
+      with:
+        name: addon-32
+    - name: Consolidate addon files
+      run: |
+        mv addon-64/*.nvda-addon . 2>/dev/null || true
+        mv addon-32/*.nvda-addon . 2>/dev/null || true
     # put the files into the release
     - name: Automatic release
       uses: marvinpinto/action-automatic-releases@latest
