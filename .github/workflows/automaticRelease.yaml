@@ -162,6 +162,64 @@ jobs:
           compression-level: 0
           retention-days: 1
 
+  build-64-bit-addon:
+    name: build-64-bit-addon
+    continue-on-error: false
+    needs: [l10n, zip-rules, rust-64]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    # download the 64 build
+    - name: Download 64 bit build
+      uses: actions/download-artifact@v4
+      with:
+        name: libmathcat_py-64-3.13-win.zip
+    # download the Rules dir (not part of checkout)
+    - name: Download 64 bit build
+      uses: actions/download-artifact@v4
+      with:
+        name: Rules.zip
+    # put things where they belong
+    - name: Set up addons dir
+      run: |
+        unzip libmathcat_py-64-3.13-win.zip
+        mv libmathcat_py.pyd Rules.zip addon/globalPlugins/MathCAT
+        cd addon/globalPlugins/MathCAT
+        sed 's/^import wx\.xrc/# import wx.xrc/' --in-place MathCATgui.py  # fix wx file
+        unzip Rules.zip
+        rm Rules.zip
+    # build the addon
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.13   # needed for scons
+    - name: Install scons dependencies
+      run: |
+        pip install scons markdown
+        sudo apt update
+        sudo apt install gettext
+    - name: Update NVDA Version Constraints
+      run: |
+        # Adjust the version numbers for the old 32 bit NVDA version
+        sed -i 's/"addon_minimumNVDAVersion": "[^"]*"/"addon_minimumNVDAVersion": "2025.1"/' buildVars.py
+        sed -i 's/"addon_lastTestedNVDAVersion": "[^"]*"/"addon_lastTestedNVDAVersion": "2025.4"/' buildVars.py
+    - name: Run scons to build .addon file
+      run: |
+          scons
+    - name: Rename addon for 64-bit
+      run: |
+        for f in *.nvda-addon; do
+          mv "$f" "${f%.nvda-addon}-64.nvda-addon"
+        done          
+    - name: Upload the addon
+      uses: actions/upload-artifact@v4
+      with:
+        name: addon
+        path: "*.nvda-addon"
+        compression-level: 0
+        retention-days: 1
+
   build-32-bit-addon:
     name: build-32-bit-addon
     continue-on-error: false
@@ -207,55 +265,6 @@ jobs:
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-32.nvda-addon"
         done          
-    - name: Upload the addon
-      uses: actions/upload-artifact@v4
-      with:
-        name: addon
-        path: "*.nvda-addon"
-        compression-level: 0
-        retention-days: 1
-
-
-  build-64-bit-addon:
-    name: build-64-bit-addon
-    continue-on-error: false
-    needs: [l10n, zip-rules, rust-64]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    # download the 64 build
-    - name: Download 64 bit build
-      uses: actions/download-artifact@v4
-      with:
-        name: libmathcat_py-64-3.13-win.zip
-    # download the Rules dir (not part of checkout)
-    - name: Download 64 bit build
-      uses: actions/download-artifact@v4
-      with:
-        name: Rules.zip
-    # put things where they belong
-    - name: Set up addons dir
-      run: |
-        unzip libmathcat_py-64-3.13-win.zip
-        mv libmathcat_py.pyd Rules.zip addon/globalPlugins/MathCAT
-        cd addon/globalPlugins/MathCAT
-        sed 's/^import wx\.xrc/# import wx.xrc/' --in-place MathCATgui.py  # fix wx file
-        unzip Rules.zip
-        rm Rules.zip
-    # build the addon
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.13   # needed for scons
-    - name: Install scons dependencies
-      run: |
-        pip install scons markdown
-        sudo apt update
-        sudo apt install gettext
-    - name: Run scons to build .addon file
-      run: |
-          scons
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
