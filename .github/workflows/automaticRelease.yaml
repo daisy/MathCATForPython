@@ -199,11 +199,6 @@ jobs:
         pip install scons markdown
         sudo apt update
         sudo apt install gettext
-    - name: Update NVDA Version Constraints
-      run: |
-        # Adjust the version numbers for the old 32 bit NVDA version
-        sed -i 's/"addon_minimumNVDAVersion": "[^"]*"/"addon_minimumNVDAVersion": "2025.1"/' buildVars.py
-        sed -i 's/"addon_lastTestedNVDAVersion": "[^"]*"/"addon_lastTestedNVDAVersion": "2025.4"/' buildVars.py
     - name: Run scons to build .addon file
       run: |
           scons
@@ -211,7 +206,8 @@ jobs:
       run: |
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-64.nvda-addon"
-        done          
+        done
+        ls -l *.nvda-addon
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
@@ -257,6 +253,11 @@ jobs:
         pip install scons markdown
         sudo apt update
         sudo apt install gettext
+    - name: Update NVDA Version Constraints
+      run: |
+        # Adjust the version numbers for the old 32 bit NVDA version
+        sed -i 's/"addon_minimumNVDAVersion": "[^"]*"/"addon_minimumNVDAVersion": "2025.1"/' buildVars.py
+        sed -i 's/"addon_lastTestedNVDAVersion": "[^"]*"/"addon_lastTestedNVDAVersion": "2025.4"/' buildVars.py
     - name: Run scons to build .addon file
       run: |
           scons
@@ -265,6 +266,7 @@ jobs:
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-32.nvda-addon"
         done          
+        ls -l *.nvda-addon
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
