@@ -255,15 +255,16 @@ jobs:
     - name: Update NVDA Version Constraints
       run: |
         # Adjust the version numbers for the old 32 bit NVDA version
-        sed -i 's/"addon_name": "[^"]*"/"addon_name": "MathCAT-for-NVDA2025"/' buildVars.py
+        sed -i 's/"addon_name": "MathCAT"/"addon_name": "MathCAT-for-NVDA2025"/' buildVars.py
+        sed -i 's/"addon_summary": "MathCAT"/"addon_summary": "MathCAT-for-NVDA2025"/' buildVars.py
         sed -i 's/"addon_minimumNVDAVersion": "[^"]*"/"addon_minimumNVDAVersion": "2025.1"/' buildVars.py
-        sed -i 's/"addon_lastTestedNVDAVersion": "[^"]*"/"addon_lastTestedNVDAVersion": "2025.4"/' buildVars.py
+        sed -i 's/"addon_lastTestedNVDAVersion": "[^"]*"/"addon_lastTestedNVDAVersion": "2025.3"/' buildVars.py
     - name: Run scons to build .addon file
       run: |
           scons
     - name: Rename addon for 32-bit
       run: |
-        for f in *.nvda-addon; do
+        for f in *.nvda-addon; d
           mv "$f" "${f%.nvda-addon}-32.nvda-addon"
         done          
     - name: Upload the addon
