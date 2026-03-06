@@ -264,7 +264,7 @@ jobs:
           scons
     - name: Rename addon for 32-bit
       run: |
-        for f in *.nvda-addon; d
+        for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-32.nvda-addon"
         done          
     - name: Upload the addon
