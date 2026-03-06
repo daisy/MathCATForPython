@@ -259,6 +259,7 @@ jobs:
         sed -i 's/"addon_summary": _("MathCAT"/"addon_summary": _("MathCAT-for-NVDA2025"/' buildVars.py
         sed -i 's/"addon_minimumNVDAVersion": "[^"]*"/"addon_minimumNVDAVersion": "2025.1"/' buildVars.py
         sed -i 's/"addon_lastTestedNVDAVersion": "[^"]*"/"addon_lastTestedNVDAVersion": "2025.3"/' buildVars.py
+        cat buildVars.py
     - name: Run scons to build .addon file
       run: |
           scons
