@@ -1,5 +1,6 @@
 addon/doc/*.css
 addon/doc/en/
+Cargo.lock
 target/
 *_docHandler.py
 *.html
