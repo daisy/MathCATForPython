@@ -1,5 +1,6 @@
 addon/doc/*.css
 addon/doc/en/
+addon/globalPlugins/MathCAT/libmathcat_py.pyd
 Cargo.lock
 target/
 *_docHandler.py
