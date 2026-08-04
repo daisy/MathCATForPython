@@ -1,14 +1,19 @@
 # MathCAT
 
 * Author: Neil Soiffer
-* NVDA compatibility: 2025.1 or later (switching to a more modern Python makes it incompatible with earlier versions of NVDA)
+* NVDA compatibility: 2025.1 or later (switching to a more modern Python makes it incompatible with earlier versions of NVDA) for 32 bit NVDA versions; 2026.1 for 64 bit NVDA versions.
 * Download [stable version][1]
 
-MathCAT is designed to eventually replace MathPlayer because MathPlayer is no longer supported. MathCAT generates speech and braille from MathML. The speech for math produced by MathCAT is enhanced with prosody so that it sounds more natural. The speech can be navigated in three modes using the same commands as MathPlayer. In addition, the navigation node is indicated on a braille display.
+MathCAT replaces MathPlayer because MathPlayer is no longer supported. MathCAT generates speech and braille from MathML. The speech for math produced by MathCAT is enhanced with prosody so that it sounds more natural. The speech can be navigated in three modes using the same commands as MathPlayer. In addition, the navigation node is indicated on a braille display.
 
-MathCAT supports speech for the following languages: English, German, Spanish, Finnish, Indonesian, Norwegian, Swedish, Vietnamese, and Chinese (Traditional)
+The supported languages are: Chinese (Traditional), English, Finnish, French,
+German, Greek, Hungarian, Indonesian, Norwegian, Polish, Russian, Spanish, Swedish, and Vietnamese.
 
-MathCAT supports the following braille codes: Nemeth, UEB Technical, CMU (Spanish, Portuguese), Finish, Swedish, Vietnamese, LaTeX (German rules), ASCIIMath (German rules, Finnish rules)
+The supported braille codes are: Nemeth, UEB Technical, CMU (Spanish/Portuguese),
+Russian, Swedish, and Vietnamese braille code standards.
+Also supported are the German/Austrian braille code standards for ASCIIMath and LaTeX math markup.
+
+Other language and braille code translations are in progress.
 
 MathCAT has a number of configuration options that control speech, navigation, and braille.
 Many of these can be set in the MathCAT settings dialog (found NVDA Preferences menu).
@@ -26,10 +31,69 @@ Who should use MathCAT:
 
 Who should NOT use MathCAT:
 
-* Anyone who uses MathPlayer with a language that is not yet supported by MathCAT and are not comfortable with speech in one of the supported languages.
-* Anyone who prefers Access8Math to MathPlayer (for speech or other features)
+* Anyone who prefers Access8Math (for speech or other features)
 
 ## MathCAT Update Log
+
+### Version v0.7.6-beta.8
+
+## User-facing highlights
+
+| Area | Since 0.7.5 |
+| ---- | ----------- |
+| Languages | New: Greek, French, Hungarian, Polish, Russian; Improvements German, Norwegian, Traditional Chinease |
+| Braille | New: Russian; Nemeth 2022-ish fixes; unicode ranges; BrailleCode refactor |
+| Content | Augmented matrices; chemistry; currency/mtext cleanup; SSML fix |
+| Quality | Fuzzing; better errors; dual `no-unsafe` CI track |
+
+## Details
+
+### Languages & speech
+
+* **Polish (`pl`)** — new
+* **French (`fr`)** — new
+* **Greek (`el`)** — new
+* **Hungarian (`hu`)** — new
+* **Russian (`ru`)** — new
+* **Norwegian (`nb`)** — speech + navigation enhancements
+* **German (`de`)** — digit rules, units, other speech fixes
+* **Traditional Chinese (`zn-tw`)** — navigation / related rule updates
+* **English** — core concept names (#381); principal Log vs log; identity / **augmented matrices**; black circled Latin letters; circled-number support; unit-definition cleanups
+* **Intent** — inference tweaks
+
+### Braille
+
+* **Russian** — new 
+* **Nemeth** — 2022-oriented updates (ellipses, multipurpose between scripts, currency, typeform prefs cleanup, bugfixes)
+* Unicode tables — **collapse to ranges** + range fixups
+* Refactor — **`BrailleCode` trait + registry**
+* Table-related braille/rules work
+* Remove incomplete **ASCIIMath-fi** packaging that broke builds
+
+### Canonicalization, chemistry, robustness
+
+* Chemistry — mmultiscripts/scripts merge, atomic-number scoring, chem-element intent/heuristics, chem test fixes
+* Bad mmultiscripts / empty bases / `data-split` cleanup
+* Currency symbols split out of `mtext` / `mi` / `mn`; less aggressive `?` fill-in
+* Empty `<mi>` / degree edge cases; mtext-as-number → `mn` where appropriate
+* Stronger panic/error reporting (tests + containers)
+* **SSML** — stopped incorrectly escaping SSML (#585)
+
+### Internals
+
+* Rust **edition 2024**; `lazy_static` → **`LazyLock`**; API cleanups (`AsRef<str>`, etc.)
+* **anyhow** instead of error-chain
+* Optional **`no-unsafe`** via `sxd-document-no-unsafe` / `sxd-xpath-no-unsafe` (default = classic mode)
+* CI — build/test/clippy for default **and** `no-unsafe`; fuzz both configs; CI on all branches; Python tooling CI; coverage; pre-release fixes
+* **cargo-fuzz** harness, dictionary, corpus cache, regression helpers
+* **audit-translations** and related Python/uv tooling
+* AGENTS.md, CODEOWNERS, CLI / `mathml2text` path
+* Dependency bumps; BrailleDocs publish exclude
+
+### Docs
+
+* README / product-page copy; AT notes (JAWS, Orca, Kurzweil, etc.)
+* User guides / translators’ guide work; example HTML for translator testing
 
 ### Version 0.7.5
 
@@ -63,7 +127,7 @@ Who should NOT use MathCAT:
 * Corrected the rule for what is allowed for "intent"
 * Improved the inference rules for units (supports "mi" if it is marked as "normal")
 * Fixed a navigation bug with log, ln, and lg
-* Improved error messages -- these should aid in reporting problems in speech and navigation
+* Improved error messages -* these should aid in reporting problems in speech and navigation
 * Improved speech for fractions that involve units ("meters *per* second")
 * Many improvements to the recognition of Chemistry
 * Fixed a Nemeth bug where a script end and baseline indicator were emitted when neither should have been present.
@@ -110,7 +174,7 @@ Lots of changes because it has been a while since the last official release.
 * Be more restrictive when inferring a table
 * Changed speech for the general cases of `mover` and `munder` from "modified x with y above it" to "quantity x with y above it"
 * Improved rule for {} so that it isn't always spoken as "set of ...". It could just be bracketing chars.
-* Tweaked the speech for ∈ inside of a set so that the word "is" is dropped when part of a set -- "the set of all x is an element of ..." sounds poor.
+* Tweaked the speech for ∈ inside of a set so that the word "is" is dropped when part of a set -* "the set of all x is an element of ..." sounds poor.
 * Improved rule for chemistry recognition for atomic numbers.
 * Update to speech hint property names in the proposed MathML Core property list
 * Add speech for coordinates ("the point at 1 comma 2")
@@ -119,7 +183,7 @@ Lots of changes because it has been a while since the last official release.
 * Added an 'xlong' pause
 * Increased the meaning of short/medium/long pauses from 150ms/300ms/600ms to 200ms/400ms/800ms. As always, these are scaled to the speech rate.
 * In MathML 4, `mlabedtr` is deprecated. A workaround is to use the intent property `:equation-label` on an `mtd` and this is now supported
-* Added speech for units (e.g., "km", "in") -- won't work for single letter units such as "m" and "s" unless marked as a unit
+* Added speech for units (e.g., "km", "in") -* won't work for single letter units such as "m" and "s" unless marked as a unit
 * Terse mode now says "of" for functions except for trig/log functions. It was a little too terse before.
 
 #### Navigation
@@ -152,7 +216,7 @@ Lots of changes because it has been a while since the last official release.
 #### Fixes
 
 * Fixed bug with espeak where it would slow down
-* Forgot to implement relative slowdown when navigating -- fixed
+* Forgot to implement relative slowdown when navigating -* fixed
 * Fixed sans-serif indicator for Nemeth braille.
 * Fixed a bug where empty cells in a table that is piecewise, m:system-of-equations or lines were spoken.
 * Fixed bug where open/closed intervals were inferred when brackets/parens were nested (can't be an interval).
@@ -168,7 +232,7 @@ Lots of changes because it has been a while since the last official release.
 * Cleaned up use of definitions.yaml.
 * Fixed some bugs in the MathML cleanup for "," decimal separators.
 * Found a bug in braille highlighting when nothing is highlighted (maybe never happens which is why I didn't see it in practice?)
-* Fixed "Describe" mode so that it works -- it is still very minimal and probably not useful yet
+* Fixed "Describe" mode so that it works -* it is still very minimal and probably not useful yet
 * Add space after math speech to work around a MS Word bug that concatinates the next character in the text onto the math.
 
 ### Version 0.5.6
@@ -184,28 +248,31 @@ Lots of changes because it has been a while since the last official release.
 * Some other smaller bug fixes that weren't reported by users
 
 ### Version 0.5.0
+
 * Added German LaTeX braille code. Unlike other braille codes, this generates ASCII chars and uses the current braille output table to translate the characters to braille.
 * Added (expermental) ASCIIMath braille code. Like the LaTeX braille code, this generates ASCII chars and uses the current braille output table to translate the characters to braille.
 * Added "CopyAs" preference that supports copying as MathML, LaTeX, or ASCIIMath using cntl+C when focused on MathML (as before). The currently focused node is copied. Note: this is only listed in the prefs.yaml file and is not exposed (yet) in the MathCAT Preferences dialog.
 
 ### Version 0.4.2
+
 * Fixed language switching when voice changes and MathCAT language is "Auto"
 * Added more checks for $Impairments to improve reading when it is not set for those who are blind
 * Nemeth: fix for "~" when it isn't part of an mrow
 * UEB: character additions, "~" spacing fix if prefix, xor fix,
 * MathML cleanup for accented vowels (mainly for Vietnamese)
-* Major rewrite of preference reading/updating code with big speedup -- added `CheckRuleFiles` pref to control which files are checked for updates
-* Added two new interface calls -- enables setting the navigaton location from the braille cursor (not part of MathCAT addon yet)
+* Major rewrite of preference reading/updating code with big speedup -* added `CheckRuleFiles` pref to control which files are checked for updates
+* Added two new interface calls -* enables setting the navigaton location from the braille cursor (not part of MathCAT addon yet)
 
 ### Version 0.3.11
+
 * Upgraded to python 3.11 and verified working with NVDA 2024.1
 * Fix bugs in Vietnamese braille and also in Speech, mostly for chemistry.
 * Fix broken braille when braille code and dependent language don't match (specifically Vietnam braille and Vietnamese speech)
 * Fix whitespace bug in HTML inside of tokens
 * Improve roman numeral detection
 
-
 ### Version 0.3.9
+
 * Added Traditional Chinese translation (thanks to Hon-Jang Yang)
 * Fixed bug with navigating into the base of a scripted expression that has parenthesis
 * Significantly changed the way whitespace is handled. This mainly affects braille output (spaces and "omission" detection).
@@ -213,15 +280,17 @@ Lots of changes because it has been a while since the last official release.
 * UEB braille fixes that came up from adding chemistry examples
 * UEB fixes for adding auxillary parenthesis in some cases
 
-
 ### Version 0.3.8
+
 Braille:
+
 * Dialog has been internationalized for several languages (many thanks to the translators!)
-* Initial implementation of CMU -- the braille code used in Spanish and Portuguese speaking countries
+* Initial implementation of CMU -* the braille code used in Spanish and Portuguese speaking countries
 * Fix some UEB bugs and added some characters for UEB
 * Significant improvements to Vietnamese braille
 
 Other fixes:
+
 * Change relative rate dialog slider to have a maximum value of 100% (now only allows setting slower rates). Also, added step sizes so it is easier to raise/lower the rate significantly.
 * Fix eSpeak bug that sometimes cut off speech when the relative rate was changed
 * Improvements to Vietnamese speech
@@ -232,7 +301,9 @@ Other fixes:
 * Several improvements for cleaning up poor MathML code
 
 ### Version 0.3.3
+
 This release has a number of bug fixes in it. The major new features and bug fixes are:
+
 * Added Spanish Translation (thanks to Noelia Ruiz and  María Allo Roldán)
 * Modified navigation so that it starts zoomed in one level
 * Added cntrl+alt+arrow as a way to navigate tabular structures. These keys should be more memorable because they are used for table navigation in NVDA.
@@ -244,6 +315,7 @@ There are lots of small tweaks to the speech and some bug fixes for both Nemeth 
 Note: there is now an option to get Vietnam's braille standard as braille output. This is still a work in progress and is too buggy to be used other than for testing. I expect the next MathCAT release will contain a reliable implementation.
 
 ### Version 0.2.5
+
 * More improvements chemistry
 * Fixes for Nemeth:
 * * Added "omission" rules
@@ -252,6 +324,7 @@ Note: there is now an option to get Vietnam's braille standard as braille output
 * * Fixes related to Nemeth and punctuation
 
 ### Version 0.2
+
 * Lots of bug fixes
 * Improvements to speech
 * A preference setting to control the duration of pausing (works with changes to relative speech rate for math)
