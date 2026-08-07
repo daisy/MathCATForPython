@@ -34,7 +34,7 @@ addon_info = {
         Other language and braille code translations are in progress.""",
     ),
     # version
-    "addon_version": "0.7.6-beta9",
+    "addon_version": "0.7.6.beta9",
     # Author(s)
     "addon_author": "Neil Soiffer <soiffer@alum.mit.edu>",
     # URL for the add-on documentation support
