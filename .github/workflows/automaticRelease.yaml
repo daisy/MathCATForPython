@@ -32,6 +32,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Use MathCAT from GitHub latest tag
+        shell: bash
+        run: |
+          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read MathCAT version from latest tag" >&2
+            exit 1
+          fi
+          echo "Syncing package version to MathCAT $VERSION"
+          sed -i.bak \
+            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+            Cargo.toml
+          rm -f Cargo.toml.bak
       - name: Build Rust Library
         run: |
           cargo build --target x86_64-unknown-linux-gnu   # doesn't need a release build since all that we want is the Rules dir
@@ -56,6 +72,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Use MathCAT from GitHub latest tag
+        shell: bash
+        run: |
+          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read MathCAT version from latest tag" >&2
+            exit 1
+          fi
+          echo "Syncing package version to MathCAT $VERSION"
+          sed -i.bak \
+            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+            Cargo.toml
+          rm -f Cargo.toml.bak
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -93,6 +125,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Use MathCAT from GitHub latest tag
+        shell: bash
+        run: |
+          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read MathCAT version from latest tag" >&2
+            exit 1
+          fi
+          echo "Syncing package version to MathCAT $VERSION"
+          sed -i.bak \
+            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+            Cargo.toml
+          rm -f Cargo.toml.bak
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -130,6 +178,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Use MathCAT from GitHub latest tag
+        shell: bash
+        run: |
+          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read MathCAT version from latest tag" >&2
+            exit 1
+          fi
+          echo "Syncing package version to MathCAT $VERSION"
+          sed -i.bak \
+            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+            Cargo.toml
+          rm -f Cargo.toml.bak
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -199,6 +263,17 @@ jobs:
         pip install scons markdown
         sudo apt update
         sudo apt install gettext
+    - name: Sync addon version from MathCAT latest
+      shell: bash
+      run: |
+        VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+          | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+        if [ -z "$VERSION" ]; then
+          echo "Failed to read MathCAT version from latest tag" >&2
+          exit 1
+        fi
+        echo "Syncing addon_version to MathCAT $VERSION"
+        sed -i "s/\"addon_version\": \"[^\"]*\"/\"addon_version\": \"$VERSION\"/" buildVars.py
     - name: Run scons to build .addon file
       run: |
           scons
@@ -207,6 +282,7 @@ jobs:
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-64.nvda-addon"
         done
+        ls -l *.nvda-addon
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
@@ -252,6 +328,17 @@ jobs:
         pip install scons markdown
         sudo apt update
         sudo apt install gettext
+    - name: Sync addon version from MathCAT latest
+      shell: bash
+      run: |
+        VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+          | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+        if [ -z "$VERSION" ]; then
+          echo "Failed to read MathCAT version from latest tag" >&2
+          exit 1
+        fi
+        echo "Syncing addon_version to MathCAT $VERSION"
+        sed -i "s/\"addon_version\": \"[^\"]*\"/\"addon_version\": \"$VERSION\"/" buildVars.py
     - name: Update NVDA Version Constraints
       run: |
         # Adjust the version numbers for the old 32 bit NVDA version
@@ -268,6 +355,7 @@ jobs:
         for f in *.nvda-addon; do
           mv "$f" "${f%.nvda-addon}-32.nvda-addon"
         done          
+        ls -l *.nvda-addon
     - name: Upload the addon
       uses: actions/upload-artifact@v4
       with:
@@ -314,6 +402,17 @@ jobs:
       run: |
         mv addon-64/*.nvda-addon . 2>/dev/null || true
         mv addon-32/*.nvda-addon . 2>/dev/null || true
+    - name: Get MathCAT version for release title
+      id: mathcat-version
+      shell: bash
+      run: |
+        VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+          | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+        if [ -z "$VERSION" ]; then
+          echo "Failed to read MathCAT version from latest tag" >&2
+          exit 1
+        fi
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
     # put the files into the release
     - name: Automatic release
       uses: marvinpinto/action-automatic-releases@latest
@@ -321,7 +420,7 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         automatic_release_tag: latest
         prerelease: true
-        title: Development Build
+        title: Development Build (using version ${{ steps.mathcat-version.outputs.version }})
         files: |
           *.nvda-addon
           libmathcat_py-32-3.11-win.zip
