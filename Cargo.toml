@@ -6,7 +6,7 @@
 
 [package]
 name = "MathCatForPython"
-version = "0.7.6-beta.9"
+version = "0.7.6-beta.9"  # on github, this will be replaced by the current MathCAT version
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 edition = "2024"
 resolver = "2"    # allows different build dependency features
@@ -14,25 +14,21 @@ resolver = "2"    # allows different build dependency features
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-# [dependencies]
-
 [lib]
 name = "libmathcat_py"
 crate-type = ["cdylib"]
 
-[dependencies.mathcat]
-version = "=0.7.6-beta.9"
-# for testing MathCAT without having to publish a new version (change two occurrences)
-# path = "../MathCAT/"
-
-[dependencies.pyo3]
-version = "0.27"
-features = ["extension-module", "abi3"]
+[dependencies]
+# mathcat = { version = "=0.7.6-beta.9" }
+mathcat = { path = "../MathCAT/" }  # local default; CI rewrites to git tag "latest"
+# mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }
+pyo3 = { version = "0.27", features = ["extension-module", "abi3"] }
 
 [build-dependencies]
 zip = { version = "8.5", default-features = false, features = ["bzip2"] }
-mathcat = {version = "=0.7.6-beta.9", features = ["include-zip"]}     # for building, we want the zip files so we can include them separately
-# mathcat = { path = "../MathCAT/", features = ["include-zip"]}     # for building, we want the zip files so we can include them separately
+# mathcat = { version = "=0.7.6-beta.9", features = ["include-zip"] }
+mathcat = { path = "../MathCAT/", features = ["include-zip"] }  # local default; CI rewrites to git tag "latest"
+# mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }
 
 
 
