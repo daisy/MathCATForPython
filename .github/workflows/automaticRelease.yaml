@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
     - name: Push l10n updates
       run: |
         git config --global user.name github-actions
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Use MathCAT from GitHub latest tag
         shell: bash
         run: |
@@ -61,7 +61,7 @@ jobs:
           directory: 'addon/globalPlugins/MathCAT'
           path: 'Rules'
       - name: Upload Rules.zip
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: 'Rules.zip'
           path: 'addon/globalPlugins/MathCAT/Rules.zip'
@@ -73,7 +73,7 @@ jobs:
     runs-on: windows-latest  # needs to run on windows because of bzip2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Use MathCAT from GitHub latest tag
         shell: bash
         run: |
@@ -116,7 +116,7 @@ jobs:
           directory: 'Example'
           path: 'libmathcat_py.pyd'
       - name: Upload 32 bit pyd file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: libmathcat_py-32-3.11-win.zip
           path: libmathcat_py-32-3.11-win.zip
@@ -128,7 +128,7 @@ jobs:
     runs-on: windows-latest  # needs to run on windows because of bzip2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Use MathCAT from GitHub latest tag
         shell: bash
         run: |
@@ -171,7 +171,7 @@ jobs:
           cd Example
           python test.py
       - name: Upload 64 bit pyd file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: libmathcat_py-64-3.13-win.zip
           path: libmathcat_py-64-3.13-win.zip
@@ -183,7 +183,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Use MathCAT from GitHub latest tag
         shell: bash
         run: |
@@ -227,7 +227,7 @@ jobs:
           directory: 'Example'
           path: 'libmathcat_py.so'
       - name: Upload 64 bit pyd file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: libmathcat_py-64-3.13-linux.zip
           path: libmathcat_py-64-3.13-linux.zip
@@ -241,15 +241,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
     # download the 64 build
     - name: Download 64 bit build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: libmathcat_py-64-3.13-win.zip
     # download the Rules dir (not part of checkout)
     - name: Download 64 bit build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Rules.zip
     # put things where they belong
@@ -263,7 +263,7 @@ jobs:
         rm Rules.zip
     # build the addon
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.13   # needed for scons
     - name: Install scons dependencies
@@ -292,7 +292,7 @@ jobs:
         done
         ls -l *.nvda-addon
     - name: Upload the addon
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: addon-64
         path: "*.nvda-addon"
@@ -306,15 +306,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
     # download the 32 build
     - name: Download 32 bit build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: libmathcat_py-32-3.11-win.zip
     # download the Rules dir (not part of checkout)
     - name: Download 32 bit build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Rules.zip
     # put things where they belong
@@ -328,7 +328,7 @@ jobs:
         rm Rules.zip
     # build the addon
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.11   # needed for scons
     - name: Install scons dependencies
@@ -365,7 +365,7 @@ jobs:
         done          
         ls -l *.nvda-addon
     - name: Upload the addon
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: addon-32
         path: "*.nvda-addon"
@@ -379,31 +379,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
 
     # download the previous build artifacts and put them in their proper places
     - name: Download Rules.zip
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Rules.zip
     - name: Download 32 bit build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: libmathcat_py-32-3.11-win.zip
     - name: Download 64 bit build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: libmathcat_py-64-3.13-win.zip
     - name: Download 64 bit linux build
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: libmathcat_py-64-3.13-linux.zip
     - name: Download 64-bit addon
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: addon-64
     - name: Download 32-bit addon
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: addon-32
     - name: Consolidate addon files
