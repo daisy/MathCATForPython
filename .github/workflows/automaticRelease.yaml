@@ -43,11 +43,13 @@ jobs:
           fi
           echo "Syncing package version to MathCAT $VERSION"
           sed -i.bak \
-            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
             -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
             -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
             Cargo.toml
           rm -f Cargo.toml.bak
+          echo "--- Cargo.toml after sync ---"
+          cat Cargo.toml
       - name: Build Rust Library
         run: |
           cargo build --target x86_64-unknown-linux-gnu   # doesn't need a release build since all that we want is the Rules dir
@@ -83,11 +85,13 @@ jobs:
           fi
           echo "Syncing package version to MathCAT $VERSION"
           sed -i.bak \
-            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
             -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
             -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
             Cargo.toml
           rm -f Cargo.toml.bak
+          echo "--- Cargo.toml after sync ---"
+          cat Cargo.toml
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -136,11 +140,13 @@ jobs:
           fi
           echo "Syncing package version to MathCAT $VERSION"
           sed -i.bak \
-            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
             -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
             -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
             Cargo.toml
           rm -f Cargo.toml.bak
+          echo "--- Cargo.toml after sync ---"
+          cat Cargo.toml
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -189,11 +195,13 @@ jobs:
           fi
           echo "Syncing package version to MathCAT $VERSION"
           sed -i.bak \
-            -e "s/^version = \".*\"/version = \"$VERSION\"/" \
+            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
             -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
             -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
             Cargo.toml
           rm -f Cargo.toml.bak
+          echo "--- Cargo.toml after sync ---"
+          cat Cargo.toml
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
