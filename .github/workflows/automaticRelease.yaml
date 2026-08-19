@@ -32,22 +32,43 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      - name: Use MathCAT from GitHub latest tag
+      - name: Use matching MathCAT branch if available (fallback to latest)
         shell: bash
         run: |
-          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
-            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
-          if [ -z "$VERSION" ]; then
-            echo "Failed to read MathCAT version from latest tag" >&2
-            exit 1
+          # Determine branch/ref for PRs and pushes
+          if [ -n "${GITHUB_HEAD_REF:-}" ]; then
+            REF="$GITHUB_HEAD_REF"
+          else
+            REF="${GITHUB_REF#refs/heads/}"
           fi
-          echo "Syncing package version to MathCAT $VERSION"
-          sed -i.bak \
-            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
-            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
-            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
-            Cargo.toml
-          rm -f Cargo.toml.bak
+          echo "Detected ref: $REF"
+          REMOTE=https://github.com/NSoiffer/MathCAT.git
+
+          if git ls-remote --heads "$REMOTE" "$REF" | grep -q "refs/heads/$REF"; then
+            echo "Using MathCAT branch $REF"
+            sed -i.bak \
+              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", branch = "'" \
+              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", branch = "'" \
+              Cargo.toml
+            # finish the branch replacement (sed quoting split across lines)
+            sed -i "s|branch = \"'\"|branch = \"$REF\"|g" Cargo.toml
+            sed -i "s|branch = \"'\"|branch = \"$REF\"|g" Cargo.toml
+          else
+            echo "No matching branch in MathCAT; falling back to latest tag"
+            VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+              | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+            if [ -z "$VERSION" ]; then
+              echo "Failed to read MathCAT version from latest tag" >&2
+              exit 1
+            fi
+            echo "Syncing package version to MathCAT $VERSION"
+            sed -i.bak \
+              -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
+              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+              Cargo.toml
+            rm -f Cargo.toml.bak
+          fi
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Build Rust Library
@@ -83,22 +104,41 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      - name: Use MathCAT from GitHub latest tag
+      - name: Use matching MathCAT branch if available (fallback to latest)
         shell: bash
         run: |
-          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
-            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
-          if [ -z "$VERSION" ]; then
-            echo "Failed to read MathCAT version from latest tag" >&2
-            exit 1
+          if [ -n "${GITHUB_HEAD_REF:-}" ]; then
+            REF="$GITHUB_HEAD_REF"
+          else
+            REF="${GITHUB_REF#refs/heads/}"
           fi
-          echo "Syncing package version to MathCAT $VERSION"
-          sed -i.bak \
-            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
-            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
-            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
-            Cargo.toml
-          rm -f Cargo.toml.bak
+          echo "Detected ref: $REF"
+          REMOTE=https://github.com/NSoiffer/MathCAT.git
+
+          if git ls-remote --heads "$REMOTE" "$REF" | grep -q "refs/heads/$REF"; then
+            echo "Using MathCAT branch $REF"
+            sed -i.bak \
+              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", branch = "'" \
+              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", branch = "'" \
+              Cargo.toml
+            sed -i "s|branch = \"'\"|branch = \"$REF\"|g" Cargo.toml
+            sed -i "s|branch = \"'\"|branch = \"$REF\"|g" Cargo.toml
+          else
+            echo "No matching branch in MathCAT; falling back to latest tag"
+            VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+              | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+            if [ -z "$VERSION" ]; then
+              echo "Failed to read MathCAT version from latest tag" >&2
+              exit 1
+            fi
+            echo "Syncing package version to MathCAT $VERSION"
+            sed -i.bak \
+              -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
+              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+              Cargo.toml
+            rm -f Cargo.toml.bak
+          fi
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
@@ -138,22 +178,41 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      - name: Use MathCAT from GitHub latest tag
+      - name: Use matching MathCAT branch if available (fallback to latest)
         shell: bash
         run: |
-          VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
-            | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
-          if [ -z "$VERSION" ]; then
-            echo "Failed to read MathCAT version from latest tag" >&2
-            exit 1
+          if [ -n "${GITHUB_HEAD_REF:-}" ]; then
+            REF="$GITHUB_HEAD_REF"
+          else
+            REF="${GITHUB_REF#refs/heads/}"
           fi
-          echo "Syncing package version to MathCAT $VERSION"
-          sed -i.bak \
-            -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
-            -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
-            -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
-            Cargo.toml
-          rm -f Cargo.toml.bak
+          echo "Detected ref: $REF"
+          REMOTE=https://github.com/NSoiffer/MathCAT.git
+
+          if git ls-remote --heads "$REMOTE" "$REF" | grep -q "refs/heads/$REF"; then
+            echo "Using MathCAT branch $REF"
+            sed -i.bak \
+              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", branch = "'" \
+              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", branch = "'" \
+              Cargo.toml
+            sed -i "s|branch = \"'\"|branch = \"$REF\"|g" Cargo.toml
+            sed -i "s|branch = \"'\"|branch = \"$REF\"|g" Cargo.toml
+          else
+            echo "No matching branch in MathCAT; falling back to latest tag"
+            VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
+              | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
+            if [ -z "$VERSION" ]; then
+              echo "Failed to read MathCAT version from latest tag" >&2
+              exit 1
+            fi
+            echo "Syncing package version to MathCAT $VERSION"
+            sed -i.bak \
+              -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
+              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
+              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
+              Cargo.toml
+            rm -f Cargo.toml.bak
+          fi
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
