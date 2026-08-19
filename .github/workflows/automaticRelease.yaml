@@ -68,6 +68,15 @@ jobs:
           compression-level: 0
           retention-days: 1
 
+      - name: Upload Rules-minified.zip
+        uses: actions/upload-artifact@v5
+        with:
+          name: 'Rules-minified.zip'
+          path: 'addon/globalPlugins/MathCAT/Rules-minified.zip'
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
+
   rust-32:
     name: Build 32 bit windows pyd file
     runs-on: windows-latest  # needs to run on windows because of bzip2
@@ -252,6 +261,11 @@ jobs:
       uses: actions/download-artifact@v5
       with:
         name: Rules.zip
+    - name: Download Rules-minified.zip
+      uses: actions/download-artifact@v5
+      with:
+        name: Rules-minified.zip
+        if-no-files-found: ignore
     # put things where they belong
     - name: Set up addons dir
       run: |
@@ -317,6 +331,11 @@ jobs:
       uses: actions/download-artifact@v5
       with:
         name: Rules.zip
+    - name: Download Rules-minified.zip
+      uses: actions/download-artifact@v5
+      with:
+        name: Rules-minified.zip
+        if-no-files-found: ignore
     # put things where they belong
     - name: Set up addons dir
       run: |
@@ -386,6 +405,11 @@ jobs:
       uses: actions/download-artifact@v5
       with:
         name: Rules.zip
+    - name: Download Rules-minified.zip
+      uses: actions/download-artifact@v5
+      with:
+        name: Rules-minified.zip
+        if-no-files-found: ignore
     - name: Download 32 bit build
       uses: actions/download-artifact@v5
       with:
@@ -435,3 +459,4 @@ jobs:
           libmathcat_py-64-3.13-win.zip
           libmathcat_py-64-3.13-linux.zip
           Rules.zip
+          Rules-minified.zip
