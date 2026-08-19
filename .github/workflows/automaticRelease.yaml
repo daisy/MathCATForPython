@@ -590,7 +590,7 @@ jobs:
         else
           # sanitize branch name to be safe in tag
           SAFE_REF=$(echo "$REF" | sed 's|[^A-Za-z0-9._-]|-|g')
-          TAG=latest-${SAFE_REF}
+          TAG=${SAFE_REF}
         fi
         echo "tag=$TAG" >> "$GITHUB_OUTPUT"
     # put the files into the release
