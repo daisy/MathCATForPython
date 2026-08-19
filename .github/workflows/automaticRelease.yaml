@@ -78,19 +78,27 @@ jobs:
           filename: 'Rules.zip'
           directory: 'addon/globalPlugins/MathCAT'
           path: 'Rules'
+      - name: Ensure Rules-minimized.zip exists
+        run: |
+          if [ ! -f addon/globalPlugins/MathCAT/Rules-minimized.zip ]; then
+            cp addon/globalPlugins/MathCAT/Rules.zip addon/globalPlugins/MathCAT/Rules-minimized.zip
+            echo "Created placeholder Rules-minimized.zip"
+          else
+            echo "Rules-minimized.zip already exists"
+          fi
       - name: Upload Rules.zip
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: 'Rules.zip'
           path: 'addon/globalPlugins/MathCAT/Rules.zip'
           compression-level: 0
           retention-days: 1
 
-      - name: Upload Rules-minified.zip
-        uses: actions/upload-artifact@v5
+      - name: Upload Rules-minimized.zip
+        uses: actions/upload-artifact@v7
         with:
-          name: 'Rules-minified.zip'
-          path: 'addon/globalPlugins/MathCAT/Rules-minified.zip'
+          name: 'Rules-minimized.zip'
+          path: 'addon/globalPlugins/MathCAT/Rules-minimized.zip'
           compression-level: 0
           retention-days: 1
           if-no-files-found: ignore
@@ -160,7 +168,7 @@ jobs:
           directory: 'Example'
           path: 'libmathcat_py.pyd'
       - name: Upload 32 bit pyd file
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: libmathcat_py-32-3.11-win.zip
           path: libmathcat_py-32-3.11-win.zip
@@ -232,7 +240,7 @@ jobs:
           cd Example
           python test.py
       - name: Upload 64 bit pyd file
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: libmathcat_py-64-3.13-win.zip
           path: libmathcat_py-64-3.13-win.zip
@@ -312,7 +320,7 @@ jobs:
           directory: 'Example'
           path: 'libmathcat_py.so'
       - name: Upload 64 bit pyd file
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: libmathcat_py-64-3.13-linux.zip
           path: libmathcat_py-64-3.13-linux.zip
@@ -329,18 +337,18 @@ jobs:
       uses: actions/checkout@v5
     # download the 64 build
     - name: Download 64 bit build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: libmathcat_py-64-3.13-win.zip
     # download the Rules dir (not part of checkout)
     - name: Download 64 bit build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: Rules.zip
-    - name: Download Rules-minified.zip
-      uses: actions/download-artifact@v5
+    - name: Download Rules-minimized.zip
+      uses: actions/download-artifact@v8
       with:
-        name: Rules-minified.zip
+        name: Rules-minimized.zip
         if-no-files-found: ignore
     # put things where they belong
     - name: Set up addons dir
@@ -398,7 +406,7 @@ jobs:
         done
         ls -l *.nvda-addon
     - name: Upload the addon
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: addon-64
         path: "*.nvda-addon"
@@ -415,18 +423,18 @@ jobs:
       uses: actions/checkout@v5
     # download the 32 build
     - name: Download 32 bit build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: libmathcat_py-32-3.11-win.zip
     # download the Rules dir (not part of checkout)
     - name: Download 32 bit build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: Rules.zip
-    - name: Download Rules-minified.zip
-      uses: actions/download-artifact@v5
+    - name: Download Rules-minimized.zip
+      uses: actions/download-artifact@v8
       with:
-        name: Rules-minified.zip
+        name: Rules-minimized.zip
         if-no-files-found: ignore
     # put things where they belong
     - name: Set up addons dir
@@ -492,7 +500,7 @@ jobs:
         done          
         ls -l *.nvda-addon
     - name: Upload the addon
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: addon-32
         path: "*.nvda-addon"
@@ -510,32 +518,32 @@ jobs:
 
     # download the previous build artifacts and put them in their proper places
     - name: Download Rules.zip
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: Rules.zip
-    - name: Download Rules-minified.zip
-      uses: actions/download-artifact@v5
+    - name: Download Rules-minimized.zip
+      uses: actions/download-artifact@v8
       with:
-        name: Rules-minified.zip
+        name: Rules-minimized.zip
         if-no-files-found: ignore
     - name: Download 32 bit build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: libmathcat_py-32-3.11-win.zip
     - name: Download 64 bit build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: libmathcat_py-64-3.13-win.zip
     - name: Download 64 bit linux build
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: libmathcat_py-64-3.13-linux.zip
     - name: Download 64-bit addon
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: addon-64
     - name: Download 32-bit addon
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: addon-32
     - name: Consolidate addon files
@@ -582,4 +590,4 @@ jobs:
           libmathcat_py-64-3.13-win.zip
           libmathcat_py-64-3.13-linux.zip
           Rules.zip
-          Rules-minified.zip
+          Rules-minimized.zip
