@@ -576,12 +576,32 @@ jobs:
           exit 1
         fi
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+    - name: Compute automatic release tag
+      id: set-release-tag
+      shell: bash
+      run: |
+        if [ -n "${GITHUB_HEAD_REF:-}" ]; then
+          REF="$GITHUB_HEAD_REF"
+        else
+          REF="${GITHUB_REF#refs/heads/}"
+        fi
+        if [ "$REF" = "" ] || [ "$REF" = "main" ]; then
+          TAG=latest
+        else
+          # sanitize branch name to be safe in tag
+          SAFE_REF=$(echo "$REF" | sed 's|[^A-Za-z0-9._-]|-|g')
+          TAG=latest-${SAFE_REF}
+        fi
+        echo "tag=$TAG" >> "$GITHUB_OUTPUT"
     # put the files into the release
+    - name: Log resolved release tag
+      run: |
+        echo "Resolved release tag: ${{ steps.set-release-tag.outputs.tag }}"
     - name: Automatic release
       uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        automatic_release_tag: latest
+        automatic_release_tag: ${{ steps.set-release-tag.outputs.tag }}
         prerelease: true
         title: Development Build (using version ${{ steps.mathcat-version.outputs.version }})
         files: |
