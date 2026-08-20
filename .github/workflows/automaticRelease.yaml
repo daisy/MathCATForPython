@@ -32,7 +32,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      - name: Use matching MathCAT branch if available (fallback to latest)
+      - name: Resolve MathCAT source ref
+        id: mathcat-source
         shell: bash
         run: |
           # Determine branch/ref for PRs and pushes
@@ -46,62 +47,35 @@ jobs:
 
           if git ls-remote --heads "$REMOTE" "$REF" | grep -q "refs/heads/$REF"; then
             echo "Using MathCAT branch $REF"
-            sed -i.bak \
-              -e "s|mathcat = { path = \"../MathCAT/\" }|mathcat = { git = \"https://github.com/NSoiffer/MathCAT\", branch = \"$REF\" }|" \
-              -e "s|mathcat = { path = \"../MathCAT/\", features = \[\"include-zip\"\] }|mathcat = { git = \"https://github.com/NSoiffer/MathCAT\", branch = \"$REF\", features = [\"include-zip\"] }|" \
-              Cargo.toml
+            echo "ref=$REF" >> "$GITHUB_OUTPUT"
           else
             echo "No matching branch in MathCAT; falling back to latest tag"
-            VERSION=$(curl -fsSL https://raw.githubusercontent.com/NSoiffer/MathCAT/latest/Cargo.toml \
-              | sed -n 's/^version = "\(.*\)"/\1/p' | head -n1)
-            if [ -z "$VERSION" ]; then
-              echo "Failed to read MathCAT version from latest tag" >&2
-              exit 1
-            fi
-            echo "Syncing package version to MathCAT $VERSION"
-            sed -i.bak \
-              -e "/^\[package\]/,/^\[/{s/^version = \".*\"/version = \"$VERSION\"/;}" \
-              -e 's|mathcat = { path = "../MathCAT/" }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }|' \
-              -e 's|mathcat = { path = "../MathCAT/", features = \["include-zip"\] }|mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }|' \
-              Cargo.toml
-            rm -f Cargo.toml.bak
+            echo "ref=latest" >> "$GITHUB_OUTPUT"
           fi
-          echo "--- Cargo.toml after sync ---"
-          cat Cargo.toml
-      - name: Build Rust Library
-        run: |
-          cargo build --target x86_64-unknown-linux-gnu   # doesn't need a release build since all that we want is the Rules dir
-      - name: create rules.zip
-        uses: thedoctor0/zip-release@0.7.5
+      - name: Checkout matching MathCAT source
+        uses: actions/checkout@v5
         with:
-          type: 'zip'
-          filename: 'Rules.zip'
-          directory: 'addon/globalPlugins/MathCAT'
-          path: 'Rules'
-      - name: Ensure Rules-minimized.zip exists
+          repository: NSoiffer/MathCAT
+          ref: ${{ steps.mathcat-source.outputs.ref }}
+          path: MathCAT
+      - name: Create Rules.zip and Rules-minimized.zip
         run: |
-          if [ ! -f addon/globalPlugins/MathCAT/Rules-minimized.zip ]; then
-            cp addon/globalPlugins/MathCAT/Rules.zip addon/globalPlugins/MathCAT/Rules-minimized.zip
-            echo "Created placeholder Rules-minimized.zip"
-          else
-            echo "Rules-minimized.zip already exists"
-          fi
+          cargo run --manifest-path MathCAT/Cargo.toml --release --bin package-rules -- MathCAT/Rules Rules.zip
+          cargo run --manifest-path MathCAT/Cargo.toml --release --bin package-rules -- MathCAT/Rules Rules-minimized.zip --minimize
       - name: Upload Rules.zip
         uses: actions/upload-artifact@v7
         with:
           name: 'Rules.zip'
-          path: 'addon/globalPlugins/MathCAT/Rules.zip'
+          path: 'Rules.zip'
           compression-level: 0
           retention-days: 1
-
       - name: Upload Rules-minimized.zip
         uses: actions/upload-artifact@v7
         with:
           name: 'Rules-minimized.zip'
-          path: 'addon/globalPlugins/MathCAT/Rules-minimized.zip'
+          path: 'Rules-minimized.zip'
           compression-level: 0
           retention-days: 1
-          if-no-files-found: ignore
 
   rust-32:
     name: Build 32 bit windows pyd file
@@ -349,7 +323,6 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: Rules-minimized.zip
-        if-no-files-found: ignore
     # put things where they belong
     - name: Set up addons dir
       run: |
@@ -435,7 +408,6 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: Rules-minimized.zip
-        if-no-files-found: ignore
     # put things where they belong
     - name: Set up addons dir
       run: |
@@ -525,7 +497,6 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: Rules-minimized.zip
-        if-no-files-found: ignore
     - name: Download 32 bit build
       uses: actions/download-artifact@v8
       with:
