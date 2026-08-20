@@ -6,7 +6,7 @@
 
 [package]
 name = "MathCatForPython"
-version = "0.7.6-beta.9"  # on github, this will be replaced by the current MathCAT version
+version = "0.7.6-rc.1"  # on github, this will be replaced by the current MathCAT version
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 edition = "2024"
 resolver = "2"    # allows different build dependency features
