@@ -2,14 +2,14 @@ name: automatic-release
 on:
   push:
     branches:
-      - main
-  # schedule:
-  #   # * is a special character in YAML so you have to quote this string
-  #   - cron:  '0 0 * * 6'
+      - '**'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   l10n:
     name: l10n
+    if: github.ref == 'refs/heads/main'
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -304,7 +304,7 @@ jobs:
   build-64-bit-addon:
     name: build-64-bit-addon
     continue-on-error: false
-    needs: [l10n, zip-rules, rust-64]
+    needs: [zip-rules, rust-64]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -389,7 +389,7 @@ jobs:
   build-32-bit-addon:
     name: build-32-bit-addon
     continue-on-error: false
-    needs: [l10n, zip-rules, rust-32]
+    needs: [zip-rules, rust-32]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -481,6 +481,7 @@ jobs:
 
   pre-release:
     name: Pre Release
+    if: github.event_name != 'pull_request'
     continue-on-error: false
     needs: [zip-rules, rust-32, rust-64, linux-64, build-32-bit-addon, build-64-bit-addon]
     runs-on: ubuntu-latest
