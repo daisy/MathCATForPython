@@ -8,9 +8,9 @@ echo "before cargo build"
 PYO3_PYTHON=${PYO3_PYTHON_64}/python.exe STFLAGS="$STFLAGS" cargo build --target x86_64-pc-windows-msvc --release
 echo "after cargo build"
 
-echo "before cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll addon/globalPlugins/MathCAT/libmathcat_py.pyd"
+echo "before cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll addon/globalPlugins/MathCAT/libmathcat_py_x64.pyd"
 
-cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll addon/globalPlugins/MathCAT/libmathcat_py.pyd
+cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll addon/globalPlugins/MathCAT/libmathcat_py_x64.pyd
 
 # for testing
 cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll Example/libmathcat_py.pyd
