@@ -12,6 +12,7 @@ import addonHandler
 from logHandler import log  # logging
 from collections.abc import Callable
 from .MathCAT import convertSSMLTextForNVDA
+from ._libmathcat_loader import libmathcat
 from speech import speak
 from zipfile import ZipFile
 
@@ -59,10 +60,43 @@ class UserInterface(MathCATgui.MathCATPreferencesDialog):
 		# initialize parent class
 		MathCATgui.MathCATPreferencesDialog.__init__(self, parent)
 
+		# show the MathCAT rules engine version below the logo
+		try:
+			# Translators: shows the version of the MathCAT rules engine, e.g. "Version 0.5.14"
+			self._staticTextVersion.SetLabel(_("Version {version}").format(version=libmathcat.GetVersion()))
+		except Exception as e:
+			log.exception(f"MathCAT: An exception occurred getting the MathCAT version: {e}")
+
 		# load the logo into the dialog
 		fullPathToLogo: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png")
 		if os.path.exists(fullPathToLogo):
-			self._bitmapLogo.SetBitmap(wx.Bitmap(fullPathToLogo))
+			logoImage: wx.Image = wx.Image(fullPathToLogo, wx.BITMAP_TYPE_PNG)
+			# 200 DIP; the source image is 300x300 so it stays sharp on hi-DPI displays
+			targetLogoSize: int = 200
+			# BitmapBundle pins the logical size from the smallest bitmap and paints the
+			# full-resolution one on hi-DPI displays
+			baselineBitmap: wx.Bitmap = wx.Bitmap(logoImage.Scale(targetLogoSize, targetLogoSize, wx.IMAGE_QUALITY_HIGH))
+			nativeBitmap: wx.Bitmap = wx.Bitmap(logoImage)
+			self._logoBitmapBundle: wx.BitmapBundle = wx.BitmapBundle.FromBitmaps([baselineBitmap, nativeBitmap])
+
+			# wx.StaticBitmap on Windows paints an opaque background through the PNG alpha.
+			# Replace it with a panel we paint ourselves so transparency (and the dark-mode pill) work.
+			logoPanel: wx.Panel = wx.Panel(
+				self._panelCategories,
+				wx.ID_ANY,
+				size=wx.Size(targetLogoSize, targetLogoSize),
+			)
+			logoPanel.SetBackgroundColour(self._panelCategories.GetBackgroundColour())
+			logoPanel.Bind(wx.EVT_PAINT, self.onPaintLogo)
+			self._bitmapLogo.GetContainingSizer().Replace(self._bitmapLogo, logoPanel)
+			self._bitmapLogo.Destroy()
+			self._bitmapLogo = logoPanel
+
+			# The dialog was already fitted around a null placeholder; refit now that the logo size is known.
+			self._panelCategories.Layout()
+			self.Layout()
+			self.GetSizer().Fit(self)
+			self.Centre(wx.BOTH)
 
 		# load in the system values followed by the user prefs (if any)
 		UserInterface.loadDefaultPreferences()
@@ -89,6 +123,34 @@ class UserInterface(MathCATgui.MathCATPreferencesDialog):
 		UserInterface.getBrailleCodes(self)
 		# set the ui items to match the preferences
 		UserInterface.setUIValues(self)
+
+	def onPaintLogo(self, event: wx.PaintEvent) -> None:
+		"""Paint the MathCAT logo onto its panel, with a light pill behind it on dark backgrounds.
+
+		The logo's black text/outline is invisible against a dark dialog background, so a light pill
+		is drawn behind it for contrast. On light backgrounds the pill is skipped.
+		"""
+		dc: wx.PaintDC = wx.PaintDC(self._bitmapLogo)
+		graphicsContext: wx.GraphicsContext | None = wx.GraphicsContext.Create(dc)
+		if graphicsContext is None:
+			return
+		panelSize: wx.Size = self._bitmapLogo.GetClientSize()
+		# IsDark() can report dark mode even when this unthemed dialog has a light background,
+		# so decide from the panel's actual background colour.
+		backgroundColour: wx.Colour = self._bitmapLogo.GetBackgroundColour()
+		backgroundLuminance: float = (
+			0.299 * backgroundColour.Red() + 0.587 * backgroundColour.Green() + 0.114 * backgroundColour.Blue()
+		)
+		if backgroundLuminance < 128:
+			# light grey rather than white, so the pill is not glaring on a dark dialog
+			graphicsContext.SetBrush(wx.Brush(wx.Colour(210, 210, 210)))
+			graphicsContext.SetPen(wx.TRANSPARENT_PEN)
+			# fixed 20 DIP radius so this stays a rounded rectangle, not a circle
+			cornerRadius: int = 20
+			graphicsContext.DrawRoundedRectangle(0, 0, panelSize.width, panelSize.height, cornerRadius)
+		# scale to the panel size so a hi-DPI bitmap is not drawn at native pixel size
+		bitmap: wx.Bitmap = self._logoBitmapBundle.GetBitmapFor(self._bitmapLogo)
+		graphicsContext.DrawBitmap(bitmap, 0, 0, panelSize.width, panelSize.height)
 
 	@staticmethod
 	def pathToLanguagesFolder() -> str:

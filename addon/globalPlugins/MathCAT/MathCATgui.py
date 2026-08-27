@@ -87,10 +87,23 @@ class MathCATPreferencesDialog(wx.Dialog):
 			wx.ID_ANY,
 			wx.NullBitmap,
 			wx.DefaultPosition,
-			wx.Size(126, 85),
+			wx.DefaultSize,
 			0,
 		)
+
 		bSizerCategories.Add(self._bitmapLogo, 0, wx.ALL, 5)
+
+		self._staticTextVersion: wx.StaticText = wx.StaticText(
+			self._panelCategories,
+			wx.ID_ANY,
+			"",
+			wx.DefaultPosition,
+			wx.DefaultSize,
+			wx.ALIGN_CENTRE_HORIZONTAL,
+		)
+		self._staticTextVersion.Wrap(-1)
+
+		bSizerCategories.Add(self._staticTextVersion, 0, wx.ALL | wx.EXPAND, 5)
 
 		self._panelCategories.SetSizer(bSizerCategories)
 		self._panelCategories.Layout()
