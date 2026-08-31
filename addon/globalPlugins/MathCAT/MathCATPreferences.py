@@ -96,7 +96,6 @@ class UserInterface(MathCATgui.MathCATPreferencesDialog):
 			self._panelCategories.Layout()
 			self.Layout()
 			self.GetSizer().Fit(self)
-			self.Centre(wx.BOTH)
 
 		# load in the system values followed by the user prefs (if any)
 		UserInterface.loadDefaultPreferences()
@@ -123,6 +122,28 @@ class UserInterface(MathCATgui.MathCATPreferencesDialog):
 		UserInterface.getBrailleCodes(self)
 		# set the ui items to match the preferences
 		UserInterface.setUIValues(self)
+		# Generated Centre(wx.BOTH) centres on NVDA's hidden mainFrame (top-left).
+		self._centrePreferencesDialog()
+
+	def _centrePreferencesDialog(self) -> None:
+		"""Centre the dialog on a visible parent, or on screen if there is none.
+
+		NVDA's mainFrame is a hidden window at the origin. Centre(wx.BOTH) would
+		put this dialog at the top-left of the display. Other NVDA settings
+		dialogs use CentreOnScreen() for the same reason.
+		"""
+		parent: wx.Window | None = self.GetParent()
+		parentClientSize: wx.Size | None = parent.GetClientSize() if parent is not None else None
+		if (
+			parent is not None
+			and parent.IsShown()
+			and parentClientSize is not None
+			and parentClientSize.width > 0
+			and parentClientSize.height > 0
+		):
+			self.CentreOnParent()
+		else:
+			self.CentreOnScreen()
 
 	def onPaintLogo(self, event: wx.PaintEvent) -> None:
 		"""Paint the MathCAT logo onto its panel, with a light pill behind it on dark backgrounds.
