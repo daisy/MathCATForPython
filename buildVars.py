@@ -29,7 +29,7 @@ addon_info = {
         The supported languages are: Chinese (Traditional), English, Finnish, French,
         German, Greek, Hungarian, Indonesian, Norwegian, Polish, Russian, Spanish, Swedish, and Vietnamese.
         The supported braille codes are: Nemeth, UEB Technical, CMU (Spanish/Portuguese),
-        Russian, Swedish, and Vietnamese braille code standards.
+        French, Russian, Swedish, and Vietnamese braille code standards.
         Also supported are the German/Austrian braille code standards for ASCIIMath and LaTeX math markup.
         Other language and braille code translations are in progress.""",
     ),
