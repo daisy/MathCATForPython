@@ -370,8 +370,10 @@ jobs:
           echo "Failed to read MathCAT version" >&2
           exit 1
         fi
-        echo "Syncing addon_version to MathCAT $VERSION"
-        sed -i "s/\"addon_version\": \"[^\"]*\"/\"addon_version\": \"$VERSION\"/" buildVars.py
+        # NVDA addon_version must not include beta/rc/alpha suffixes (e.g. 0.7.6, not 0.7.6-rc.4)
+        ADDON_VERSION="${VERSION%%-*}"
+        echo "Syncing addon_version to $ADDON_VERSION (from MathCAT $VERSION)"
+        sed -i "s/\"addon_version\": \"[^\"]*\"/\"addon_version\": \"$ADDON_VERSION\"/" buildVars.py
     - name: Run scons to build .addon file
       run: |
           scons
