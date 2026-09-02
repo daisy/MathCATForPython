@@ -464,9 +464,9 @@ jobs:
         if [ "$REF" = "" ] || [ "$REF" = "main" ]; then
           TAG=latest
         else
-          # sanitize branch name to be safe in tag
+          # sanitize branch name to be safe in tag; prefix so tag never matches branch name
           SAFE_REF=$(echo "$REF" | sed 's|[^A-Za-z0-9._-]|-|g')
-          TAG=${SAFE_REF}
+          TAG="build-${SAFE_REF}"
         fi
         echo "tag=$TAG" >> "$GITHUB_OUTPUT"
     # put the files into the release
