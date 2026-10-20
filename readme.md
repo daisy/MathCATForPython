@@ -10,7 +10,7 @@ The supported languages are: Chinese (Traditional), English, Finnish, French,
 German, Greek, Hungarian, Indonesian, Norwegian, Polish, Russian, Spanish, Swedish, and Vietnamese.
 
 The supported braille codes are: Nemeth, UEB Technical, CMU (Spanish/Portuguese),
-Russian, Swedish, and Vietnamese braille code standards.
+French, Russian, Swedish, and Vietnamese braille code standards.
 Also supported are the German/Austrian braille code standards for ASCIIMath and LaTeX math markup.
 
 Other language and braille code translations are in progress.
@@ -35,36 +35,59 @@ Who should NOT use MathCAT:
 
 ## MathCAT Update Log
 
-### Version v0.7.6-beta.8
+Here is a combined release note from the last official release (**0.7.5**) through **0.7.6-rc.4**, ready to paste into GitHub:
+
+---
+
+### Version v0.7.6-rc.4
 
 ## User-facing highlights
 
 | Area | Since 0.7.5 |
 | ---- | ----------- |
-| Languages | New: Greek, French, Hungarian, Polish, Russian; Improvements German, Norwegian, Traditional Chinease |
-| Braille | New: Russian; Nemeth 2022-ish fixes; unicode ranges; BrailleCode refactor |
-| Content | Augmented matrices; chemistry; currency/mtext cleanup; SSML fix |
-| Quality | Fuzzing; better errors; dual `no-unsafe` CI track |
+| NVDA addon | **Single universal addon** with both 32- and 64-bit binaries; **new logo** with hi-DPI rendering, dark-mode contrast pill, and **rules-engine version label**; last tested on **NVDA 2026.2** |
+| Languages | New: Greek, French, Hungarian, Polish, Russian; improvements German, Norwegian, Swedish, Traditional Chinese; translated navigation rules; column/row separator announcements |
+| Braille | New: Russian, **French braille**; major **UEB** BANA/ICEB updates; Nemeth 2022-ish fixes; Nemeth **⋄** fix; unicode ranges; `BrailleCode` refactor |
+| Content | Augmented matrices; chemistry (atomic-number scoring, arc-like symbols); multi-line script positions; currency/mtext cleanup; SSML fix; `uptack` → “perpendicular” |
+| Packaging | **Minified `Rules-minimized.zip`**; unified Rust rules packaging for CI, include-zip, and releases |
+| Quality | Fuzzing; better errors; dual `no-unsafe` CI track; CI on all branches and PRs |
 
 ## Details
 
+### NVDA addon (MathCATForPython)
+
+* **Single addon build** — one `.nvda-addon` ships both `libmathcat_py_x86.pyd` and `libmathcat_py_x64.pyd`; a bitness-aware loader picks the correct binary at runtime (#108)
+* **Preferences dialog** — new MathCAT logo artwork; sharp hi-DPI rendering via `BitmapBundle`; light rounded pill behind the logo on dark backgrounds; **MathCAT rules-engine version** shown below the logo (#109)
+* **Compatibility** — `addon_lastTestedNVDAVersion` updated to **2026.2**
+* **CI / release workflow** — automatic builds and pre-releases on all branches (not just `main`); per-branch release tags; consolidated `build-addon` job; l10n sync remains main-only and no longer blocks builds on feature/release branches
+
 ### Languages & speech
 
-* **Polish (`pl`)** — new
 * **French (`fr`)** — new
 * **Greek (`el`)** — new
 * **Hungarian (`hu`)** — new
-* **Russian (`ru`)** — new
-* **Norwegian (`nb`)** — speech + navigation enhancements
-* **German (`de`)** — digit rules, units, other speech fixes
-* **Traditional Chinese (`zn-tw`)** — navigation / related rule updates
+* **Polish (`pl`)** — new
+* **Russian (`ru`)** — new; speech changes merged (#689)
+* **Norwegian (`nb`)** — speech + navigation enhancements; navigation zoom no longer says “in” for prefix/silent intents (e.g. “b” instead of “in b” for `-b`)
+* **Swedish (`sv`)** — translation update (#682); same navigation zoom fix as Norwegian
+* **German (`de`)** — digit rules, units, and other speech fixes; set grammar; unit plurals and definitions; absolute-value ending; integral/logical symbols; “ray” → “Strahl”; “ruthe” → “Rute”; inverse grammar fixes
+* **Traditional Chinese (`zh-tw`)** — navigation / related rule updates; translation refresh from English (2026-06-15 baseline, #618)
 * **English** — core concept names (#381); principal Log vs log; identity / **augmented matrices**; black circled Latin letters; circled-number support; unit-definition cleanups
-* **Intent** — inference tweaks
+* **Navigation rules** — initial multi-language translation of navigation command names
+* **Cross-language** — column and row **separator announcements** in matrices/tables (#679); **multi-line script positions** (mtable or nested munder/mover) separated by commas; **`uptack` (`⊥`)** speaks as “perpendicular” (#330); non-terse **square root** speech restored (#668); **`lg`** recognized as ASCIIMath function; better speech for missing/parse-error characters
+* **Intent** — inference tweaks; richer `definitions.yaml` format with `|` alternatives; intents aligned to core concepts with tests
 
 ### Braille
 
-* **Russian** — new 
-* **Nemeth** — 2022-oriented updates (ellipses, multipurpose between scripts, currency, typeform prefs cleanup, bugfixes)
+* **Russian** — new
+* **French braille** — new braille code with rules, unicode tables, and chemistry tests (initial release; some open questions remain)
+* **Nemeth** — 2022-oriented updates (ellipses, multipurpose between scripts, currency, typeform prefs cleanup, bugfixes); fixed braille for **⋄** (diamond operator, #703)
+* **UEB** — updated to latest **BANA/ICEB** guidance:
+  * Grade-1 indicator rules revised; new **G1 BANA/GTM mode** preference
+  * Expanded grade-2 contractions; fixed **be / con / dis** contractions at word starts
+  * **mtable** row-start and row-terminator handling for linear braille (some rules provisional, pending ICEB feedback)
+  * New accented-letter patterns (e.g. **Ñ**) and **Hebrew alphabet** indicator
+  * Narrowed overly broad pseudo-script rule (also cleaned up in other braille codes)
 * Unicode tables — **collapse to ranges** + range fixups
 * Refactor — **`BrailleCode` trait + registry**
 * Table-related braille/rules work
@@ -72,7 +95,8 @@ Who should NOT use MathCAT:
 
 ### Canonicalization, chemistry, robustness
 
-* Chemistry — mmultiscripts/scripts merge, atomic-number scoring, chem-element intent/heuristics, chem test fixes
+* Chemistry — mmultiscripts/scripts merge, atomic-number scoring and lookup table, chem-element intent/heuristics, chem test fixes; prescripts matching atomic number boost chemistry detection; primes on chem symbols (e.g. `R'`) no longer rejected
+* **Arc-like symbols** — merge under restricted conditions (#698); arc look-alike chars fixed after canonicalization change
 * Bad mmultiscripts / empty bases / `data-split` cleanup
 * Currency symbols split out of `mtext` / `mi` / `mn`; less aggressive `?` fill-in
 * Empty `<mi>` / degree edge cases; mtext-as-number → `mn` where appropriate
@@ -84,17 +108,20 @@ Who should NOT use MathCAT:
 * Rust **edition 2024**; `lazy_static` → **`LazyLock`**; API cleanups (`AsRef<str>`, etc.)
 * **anyhow** instead of error-chain
 * Optional **`no-unsafe`** via `sxd-document-no-unsafe` / `sxd-xpath-no-unsafe` (default = classic mode)
-* CI — build/test/clippy for default **and** `no-unsafe`; fuzz both configs; CI on all branches; Python tooling CI; coverage; pre-release fixes
+* **Rules packaging** — unified Rust `package-rules` for CI, `include-zip`, and release zips; **`Rules-minimized.zip`** (flow-style YAML) for smaller downloads
+* CI — build/test/clippy for default **and** `no-unsafe`; fuzz both configs; CI on all branches and PRs; Python tooling CI; coverage; pre-release fixes
 * **cargo-fuzz** harness, dictionary, corpus cache, regression helpers
-* **audit-translations** and related Python/uv tooling
-* AGENTS.md, CODEOWNERS, CLI / `mathml2text` path
-* Dependency bumps; BrailleDocs publish exclude
+* **audit-translations** and related Python/uv tooling; new **`--exclude`** option with tests
+* Parallel tests — serialized rules unzip/YAML reads to avoid races
 
 ### Docs
 
 * README / product-page copy; AT notes (JAWS, Orca, Kurzweil, etc.)
 * User guides / translators’ guide work; example HTML for translator testing
+* New logo with hi-DPI rendering, dark-mode contrast pill on many pages.
+* User guide and translator’s guide revisions; updated acknowledgements; MathCAGT demo link in developer docs
 
+---
 ### Version 0.7.5
 
 #### Bug Fixes and Enhancements

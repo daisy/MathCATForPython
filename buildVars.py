@@ -29,7 +29,7 @@ addon_info = {
         The supported languages are: Chinese (Traditional), English, Finnish, French,
         German, Greek, Hungarian, Indonesian, Norwegian, Polish, Russian, Spanish, Swedish, and Vietnamese.
         The supported braille codes are: Nemeth, UEB Technical, CMU (Spanish/Portuguese),
-        Russian, Swedish, and Vietnamese braille code standards.
+        French, Russian, Swedish, and Vietnamese braille code standards.
         Also supported are the German/Austrian braille code standards for ASCIIMath and LaTeX math markup.
         Other language and braille code translations are in progress.""",
     ),
@@ -46,7 +46,7 @@ addon_info = {
     # Minimum NVDA version supported (e.g. "2018.3.0", minor version is optional)
     "addon_minimumNVDAVersion": "2025.1",
     # Last NVDA version supported/tested (e.g. "2018.4.0", ideally more recent than minimum version)
-    "addon_lastTestedNVDAVersion": "2026.1",
+    "addon_lastTestedNVDAVersion": "2026.2",
     # Add-on update channel (default is None, denoting stable releases,
     # and for development releases, use "dev".)
     # Do not change unless you know what you are doing!
