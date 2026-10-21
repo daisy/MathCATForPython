@@ -35,11 +35,11 @@ Who should NOT use MathCAT:
 
 ## MathCAT Update Log
 
-Here is a combined release note from the last official release (**0.7.5**) through **0.7.6-rc.4**, ready to paste into GitHub:
+Here is a combined release note from the last official release (**0.7.5**) through **0.7.7**, ready to paste into GitHub:
 
 ---
 
-### Version v0.7.6-rc.4
+### Version v0.7.7
 
 ## User-facing highlights
 

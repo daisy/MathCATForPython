@@ -31,10 +31,14 @@ addon_info = {
         The supported braille codes are: Nemeth, UEB Technical, CMU (Spanish/Portuguese),
         French, Russian, Swedish, and Vietnamese braille code standards.
         Also supported are the German/Austrian braille code standards for ASCIIMath and LaTeX math markup.
-        Other language and braille code translations are in progress.""",
+        Other language and braille code translations are in progress.
+
+        Note: As of NVDA 2026.1, MathCAT is built into NVDA.
+        This add-on is only needed for users of 32 bit versions of NVDA and for people who need the latest features
+        and bug fixes in MathCAT before they are included in NVDA.""",
     ),
     # version
-    "addon_version": "0.7.6",
+    "addon_version": "0.7.7",
     # Author(s)
     "addon_author": "Neil Soiffer <soiffer@alum.mit.edu>",
     # URL for the add-on documentation support
@@ -50,7 +54,7 @@ addon_info = {
     # Add-on update channel (default is None, denoting stable releases,
     # and for development releases, use "dev".)
     # Do not change unless you know what you are doing!
-    "addon_updateChannel": "dev",
+    "addon_updateChannel": "None",
     # Add-on license such as GPL 2
     "addon_license": "MIT and GPL 2",
     # URL for the license document the ad-on is licensed under
