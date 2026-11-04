@@ -543,6 +543,14 @@ jobs:
           exit 1
         fi
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+    - name: Get MathCAT build date and time
+      id: mathcat-build-time
+      env:
+        RUN_STARTED_AT: ${{ github.run_started_at }}
+      shell: bash
+      run: |
+        BUILD_TIME=$(date -u -d "$RUN_STARTED_AT" '+%Y-%m-%d %H:%M UTC')
+        echo "build-time=$BUILD_TIME" >> "$GITHUB_OUTPUT"
     - name: Compute automatic release tag
       id: set-release-tag
       shell: bash
@@ -570,7 +578,7 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         automatic_release_tag: ${{ steps.set-release-tag.outputs.tag }}
         prerelease: true
-        title: Development Build (using version ${{ steps.mathcat-version.outputs.version }})
+        title: Development Build (MathCAT ${{ steps.mathcat-version.outputs.version }}, built ${{ steps.mathcat-build-time.outputs.build-time }})
         files: |
           *.nvda-addon
           libmathcat_py-32-3.11-win.zip
