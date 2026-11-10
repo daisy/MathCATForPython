@@ -19,14 +19,14 @@ name = "libmathcat_py"
 crate-type = ["cdylib"]
 
 [dependencies]
-mathcat = { version = "=0.7.6-rc.6" }
+mathcat = { version = "=0.7.8-alpha.1" }
 # mathcat = { path = "../MathCAT/" }  # local default; CI rewrites to git tag "latest"
 # mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest" }
 pyo3 = { version = "0.30", features = ["extension-module", "abi3"] }
 
 [build-dependencies]
 zip = { version = "9.0", default-features = false, features = ["bzip2"] }
-mathcat = { version = "=0.7.6-rc.6", features = ["include-zip"] }
+mathcat = { version = "=0.7.8-alpha.1", features = ["include-zip"] }
 # mathcat = { path = "../MathCAT/", features = ["include-zip"] }  # local default; CI rewrites to git tag "latest"
 # mathcat = { git = "https://github.com/NSoiffer/MathCAT", tag = "latest", features = ["include-zip"] }
 
