@@ -119,7 +119,7 @@ jobs:
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.11
           architecture: 'x86'
@@ -191,7 +191,7 @@ jobs:
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.13
           architecture: 'x64'
@@ -270,7 +270,7 @@ jobs:
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.13
           architecture: 'x64'
@@ -337,7 +337,7 @@ jobs:
         ls -l libmathcat_py_*.pyd
     # build the addon
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: 3.13   # needed for scons
     - name: Install scons dependencies
@@ -417,7 +417,7 @@ jobs:
         rm Rules.zip
     # build the addon
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: 3.11   # needed for scons
     - name: Install scons dependencies
