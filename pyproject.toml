@@ -202,7 +202,7 @@ dev = [
 	"setuptools~=72.0",
 ]
 lint = [
-	"ruff==0.8.1",
+	"ruff==0.17.4",
 	"pre-commit==4.7.0",
 	"pyright==1.1.396",
 ]
