@@ -135,7 +135,7 @@ jobs:
           cd Example
           python test.py
       - name: create zip file for pyd file -- this allows the name to indicate arch, python version, etc., but unzipped it is correctly named
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: '../libmathcat_py-32-3.11-win.zip'
@@ -203,7 +203,7 @@ jobs:
           cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll Example/libmathcat_py.pyd
           mv addon/globalPlugins/MathCAT/Rules Example
       - name: create zip file for pyd file -- this allows the name to indicate arch, python version, etc., but unzipped it is correctly named
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: '../libmathcat_py-64-3.13-win.zip'
@@ -287,7 +287,7 @@ jobs:
           cd Example
           python test.py
       - name: create zip file for pyd file -- this allows the name to indicate arch, python version, etc., but unzipped it is correctly named
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: '../libmathcat_py-64-3.13-linux.zip'
