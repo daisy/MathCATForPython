@@ -204,7 +204,7 @@ dev = [
 lint = [
 	"ruff==0.17.4",
 	"pre-commit==4.7.0",
-	"pyright==1.1.396",
+	"pyright==1.1.414",
 ]
 
 [tool.setuptools.dynamic]
