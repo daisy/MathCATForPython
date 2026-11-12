@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools~=72.0", "wheel"]
+requires = ["setuptools>=72,<85", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -199,7 +199,7 @@ reportUnknownMemberType = false
 [dependency-groups]
 dev = [
 	"SCons==4.11.1",
-	"setuptools~=72.0",
+	"setuptools>=72,<85",
 ]
 lint = [
 	"ruff==0.17.4",
