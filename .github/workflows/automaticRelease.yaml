@@ -23,6 +23,7 @@ jobs:
         git fetch l10n
         git reset l10n/stable addon/doc addon/locale
         git commit -m "Update translations" --allow-empty
+        git config pull.rebase true
         git pull
         git push
 
