@@ -25,15 +25,15 @@ MathCAT заменяет MathPlayer, поддержка которого пре�
 навигацией и Брайлем.  Многие из них можно настроить в диалоге настроек
 MathCAT (он находится в меню «Параметры» NVDA). Дополнительную информацию об этих
 настройках смотрите в [документации по
-MathCAT](https://nsoiffer.github.io/MathCAT/users.html). Документация
+MathCAT](https://daisy.github.io/MathCAT/users.html). Документация
 содержит ссылку на
-[таблицу](https://nsoiffer.github.io/MathCAT/nav-commands.html), в которой
+[таблицу](https://daisy.github.io/MathCAT/nav-commands.html), в которой
 перечислены все навигационные команды MathCAT.
 
 Примечание: MathCAT — это универсальная библиотека для формирования речи и вывода
 Брайля на основе MathML. Она используется в других проектах AT, помимо
 NVDA. Общие сведения о проекте MathCAT приведены на главной [странице
-документации MathCAT](https://nsoiffer.github.io/MathCAT).
+документации MathCAT](https://daisy.github.io/MathCAT).
 
 
 Кому подойдёт MathCAT:
