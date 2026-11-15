@@ -17,8 +17,8 @@ Other language and braille code translations are in progress.
 
 MathCAT has a number of configuration options that control speech, navigation, and braille.
 Many of these can be set in the MathCAT settings dialog (found NVDA Preferences menu).
-For more information on these settings, see the [MathCAT documentation](https://nsoiffer.github.io/MathCAT/users.html).
-The documentation includes a link to [a table listing all of the navigation commands in MathCAT](https://nsoiffer.github.io/MathCAT/nav-commands.html).
+For more information on these settings, see the [MathCAT documentation](https://daisy.github.io/MathCAT/users.html).
+The documentation includes a link to [a table listing all of the navigation commands in MathCAT](https://daisy.github.io/MathCAT/nav-commands.html).
 
 Note: MathCAT is a general library for generating speech and braille from MathML. It is used by other AT projects besides NVDA. For information on the MathCAT project in general, see the main [MathCAT Documentation page](https://nsoiffer.github.io/MathCAT).
 
