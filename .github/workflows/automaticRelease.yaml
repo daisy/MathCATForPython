@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
     - name: Push l10n updates
       run: |
         git config --global user.name github-actions
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Resolve MathCAT source ref
         id: mathcat-source
         shell: bash
@@ -54,7 +54,7 @@ jobs:
             echo "ref=latest" >> "$GITHUB_OUTPUT"
           fi
       - name: Checkout matching MathCAT source
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: NSoiffer/MathCAT
           ref: ${{ steps.mathcat-source.outputs.ref }}
@@ -83,7 +83,7 @@ jobs:
     runs-on: windows-latest  # needs to run on windows because of bzip2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Use matching MathCAT branch if available (fallback to latest)
         shell: bash
         run: |
@@ -120,7 +120,7 @@ jobs:
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.11
           architecture: 'x86'
@@ -136,7 +136,7 @@ jobs:
           cd Example
           python test.py
       - name: create zip file for pyd file -- this allows the name to indicate arch, python version, etc., but unzipped it is correctly named
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: '../libmathcat_py-32-3.11-win.zip'
@@ -155,7 +155,7 @@ jobs:
     runs-on: windows-latest  # needs to run on windows because of bzip2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Use matching MathCAT branch if available (fallback to latest)
         shell: bash
         run: |
@@ -192,7 +192,7 @@ jobs:
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.13
           architecture: 'x64'
@@ -204,7 +204,7 @@ jobs:
           cp target/x86_64-pc-windows-msvc/release/libmathcat_py.dll Example/libmathcat_py.pyd
           mv addon/globalPlugins/MathCAT/Rules Example
       - name: create zip file for pyd file -- this allows the name to indicate arch, python version, etc., but unzipped it is correctly named
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: '../libmathcat_py-64-3.13-win.zip'
@@ -227,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Use matching MathCAT branch if available (fallback to latest)
         shell: bash
         run: |
@@ -271,7 +271,7 @@ jobs:
           echo "--- Cargo.toml after sync ---"
           cat Cargo.toml
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.13
           architecture: 'x64'
@@ -288,7 +288,7 @@ jobs:
           cd Example
           python test.py
       - name: create zip file for pyd file -- this allows the name to indicate arch, python version, etc., but unzipped it is correctly named
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: '../libmathcat_py-64-3.13-linux.zip'
@@ -309,7 +309,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
     - name: Download 32 bit build
       uses: actions/download-artifact@v8
       with:
@@ -338,7 +338,7 @@ jobs:
         ls -l libmathcat_py_*.pyd
     # build the addon
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: 3.13   # needed for scons
     - name: Install scons dependencies
@@ -392,7 +392,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
     # download the 32 build
     - name: Download 32 bit build
       uses: actions/download-artifact@v8
@@ -418,7 +418,7 @@ jobs:
         rm Rules.zip
     # build the addon
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: 3.11   # needed for scons
     - name: Install scons dependencies
@@ -486,7 +486,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
 
     # download the previous build artifacts and put them in their proper places
     - name: Download Rules.zip

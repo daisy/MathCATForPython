@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools~=72.0", "wheel"]
+requires = ["setuptools>=72,<85", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -21,7 +21,7 @@ classifiers = [
 readme = "readme.md"
 license = {file = "LICENSE"}
 dependencies = [
-	"wxPython==4.2.2",
+	"wxPython==4.3.2",
 ]
 
 [project.urls]
@@ -198,13 +198,13 @@ reportUnknownMemberType = false
 
 [dependency-groups]
 dev = [
-	"SCons==4.8.1",
-	"setuptools~=72.0",
+	"SCons==4.11.1",
+	"setuptools>=72,<85",
 ]
 lint = [
-	"ruff==0.8.1",
-	"pre-commit==4.0.1",
-	"pyright==1.1.396",
+	"ruff==0.17.4",
+	"pre-commit==4.7.0",
+	"pyright==1.1.414",
 ]
 
 [tool.setuptools.dynamic]
