@@ -550,7 +550,7 @@ jobs:
         RUN_STARTED_AT: ${{ github.run_started_at }}
       shell: bash
       run: |
-        BUILD_TIME=$(date -u -d "$RUN_STARTED_AT" '+%Y-%m-%d %H:%M UTC')
+        BUILD_TIME=$(date -u '+%Y-%m-%d %H:%M UTC')
         echo "build-time=$BUILD_TIME" >> "$GITHUB_OUTPUT"
     - name: Compute automatic release tag
       id: set-release-tag
